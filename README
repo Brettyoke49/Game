@@ -1,0 +1,45 @@
+Name: Brett Probert
+
+Course: CPSC 4160
+
+Clemson Email Address: bmprobe@g.clemson.edu
+
+Project no: 3
+
+Project due date: Oct. 15, 2018
+
+Project description:
+  This project contains all of the changes laid out as required in paper.pdf.
+That consists mostly of code beutification with minimal functional impact,
+save for #6 and 8. For those I implemented parallax scrolling and a two way
+multisprite class. I also updated the background and sprites to those I chose
+/made.
+
+Where I got my sprites:
+I made the ghost sprite.
+The skeleton sprite is from: https://jesse-m.itch.io/skeleton-pack
+
+I do plan on going back and making my own sprites instead of using others',
+but I was a bit crunched for time for project 3 (as you can tell by the turn
+in time).
+
+
+How many backgrounds do I have:
+2 backgrounds. One I mostly made, after finding the simple brick base online,
+and the other being a realistic background to kind of juxtapose the pixelized
+foreground. Taken from: http://getwallpapers.com/collection/scary-forest-wallpaper
+
+What sprite did I create (not Sprite or MultiSprite):
+Two Way MultiSprite
+
+
+The easiest part of this project:
+Adding = delete to two class' constructors.
+
+
+Problems that I had in completing this project:
+
+I struggled for a bit with coming up with a way to allow the specification of the number
+of sprite instances desired in the xml spreadsheet. Making them spawn with different
+velocities was easy, using rand. But coming up with an efficient way to make them in the
+engine (especially since we had to use a vector of Drawable* objects) took me a little while.

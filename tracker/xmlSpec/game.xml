@@ -1,0 +1,82 @@
+<?xml version = "1.0"?>
+<GameData>
+<!-- screenTitle is also used to identify you and your animation.
+     So make sure to include your name as part of the screenTitle -->
+<title>The Tracker Framework</title>
+<maxStringSize>50</maxStringSize>
+
+<frameCapOn>true</frameCapOn>
+<period>17</period>
+
+<maxFrames>300</maxFrames>
+<username>malloy</username>
+
+<view>
+  <width>854</width>
+  <height>480</height>
+  <loc x="30" y="30"/>
+</view>
+
+<world>
+  <width>4000</width>
+  <height>1000</height>
+</world>
+
+<back>
+  <file>assets/spoopy_trees.jpg</file>
+  <factor>2</factor>
+  <transparency>false</transparency>
+</back>
+
+<front>
+  <file>assets/foreground.png</file>
+  <factor>1</factor>
+  <transparency>false</transparency>
+</front>
+
+<font name="font">
+  <file>fonts/arial.ttf</file>
+  <size>24</size>
+  <red>255</red>
+  <green>255</green>
+  <blue>0</blue>
+  <alpha>0</alpha>
+</font>
+
+<Skeleton>
+  <number>4</number>
+  <startLoc x="50" y="140"/>
+  <frames>13</frames>
+  <frameInterval>50</frameInterval>
+  <speedX>200</speedX>
+  <speedY>-400</speedY>
+  <transparency>true</transparency>
+</Skeleton>
+
+<SkeletonLeft>
+  <file>assets/skelWalkLeft.png</file>
+  <frames>13</frames>
+  <transparency>true</transparency>
+</SkeletonLeft>
+
+<SkeletonRight>
+  <file>assets/skelWalkRight.png</file>
+  <frames>13</frames>
+  <transparency>true</transparency>
+</SkeletonRight>
+
+<Ghost>
+  <file>assets/ghost.png</file>
+  <number>4</number>
+  <startLoc x="227" y="240"/>
+  <speedX>300</speedX>
+  <speedY>300</speedY>
+  <transparency>false</transparency>
+</Ghost>
+
+<HUD>
+  <x>30</x>
+  <y>420</y>
+</HUD>
+
+</GameData>
