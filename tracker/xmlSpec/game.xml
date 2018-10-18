@@ -12,8 +12,8 @@
 <username>malloy</username>
 
 <view>
-  <width>854</width>
-  <height>480</height>
+  <width>1200</width>
+  <height>1000</height>
   <loc x="30" y="30"/>
 </view>
 
@@ -44,7 +44,7 @@
 </font>
 
 <Skeleton>
-  <number>4</number>
+  <number>1</number>
   <startLoc x="50" y="140"/>
   <frames>13</frames>
   <frameInterval>50</frameInterval>
@@ -67,12 +67,22 @@
 
 <Ghost>
   <file>assets/ghost.png</file>
-  <number>4</number>
+  <number>1</number>
   <startLoc x="227" y="240"/>
   <speedX>300</speedX>
   <speedY>300</speedY>
   <transparency>false</transparency>
 </Ghost>
+
+<Penor>
+  <file>assets/penor_animation.png</file>
+  <startLoc x="50" y="140"/>
+  <frames>5</frames>
+  <frameInterval>200</frameInterval>
+  <speedX>200</speedX>
+  <speedY>200</speedY>
+  <transparency>false</transparency>
+</Penor>
 
 <HUD>
   <x>30</x>

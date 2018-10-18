@@ -29,7 +29,8 @@ Engine::Engine() :
   viewport( Viewport::getInstance() ),
   sprites {
     new TwoWayMultiSprite("Skeleton"),
-    new Sprite("Ghost")
+    new Sprite("Ghost"),
+    new MultiSprite("Penor")
   },
   currentSprite(0),
   makeVideo( false ),
