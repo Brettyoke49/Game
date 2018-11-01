@@ -62,7 +62,6 @@ void Engine::draw() const {
   }
 
   player->draw();
-  viewport.draw();
   printFps();
   SDL_RenderPresent(renderer);
 }

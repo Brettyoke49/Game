@@ -28,11 +28,6 @@ void Viewport::setObjectToTrack(const Drawable *obj) {
   objHeight = objectToTrack->getScaledHeight();
 }
 
-void Viewport::draw() const {
-  IoMod::getInstance().
-    writeText("Tracking: "+objectToTrack->getName(), msgPos[0], msgPos[1]);
-}
-
 void Viewport::update() {
   const float x = objectToTrack->getX();
   const float y = objectToTrack->getY();
