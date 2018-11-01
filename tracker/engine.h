@@ -6,6 +6,7 @@
 #include "world.h"
 #include "viewport.h"
 #include "player.h"
+#include "hud.h"
 
 class Engine {
 public:
@@ -17,6 +18,7 @@ private:
   const RenderContext& rc;
   const IoMod& io;
   const Gamedata& gdata;
+  const Hud& hud;
   Clock& clock;
 
   SDL_Renderer * const renderer;
@@ -40,6 +42,4 @@ private:
   Engine& operator=(const Engine&) = delete;
   void printScales() const;
   void checkForCollisions();
-
-  void printFps() const;
 };

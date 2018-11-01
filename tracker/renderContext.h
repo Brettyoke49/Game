@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <SDL.h>
 #include "imageFactory.h"

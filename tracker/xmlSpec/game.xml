@@ -13,7 +13,7 @@
 
 <view>
   <width>1200</width>
-  <height>1000</height>
+  <height>700</height>
   <loc x="30" y="30"/>
 </view>
 
@@ -75,8 +75,13 @@
 </Ghost>
 
 <HUD>
-  <x>30</x>
-  <y>920</y>
+  <x>990</x>
+  <y>10</y>
+  <width>200</width>
+  <height>160</height>
+  <r>100</r>
+  <g>0</g>
+  <b>0</b>
 </HUD>
 
 </GameData>

@@ -63,6 +63,21 @@ void IoMod::writeText(const std::string& msg, int x, int y) const {
   SDL_DestroyTexture(texture);
 }
 
+void IoMod::writeText(const std::string& msg, int x, int y, int w, int h) const {
+  SDL_Surface* surface =
+    TTF_RenderText_Solid(font, msg.c_str(), textColor);
+
+  SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+  int textWidth = w;
+  int textHeight = h;
+  SDL_FreeSurface(surface);
+  SDL_Rect dst = {x, y, textWidth, textHeight};
+
+  SDL_RenderCopy(renderer, texture, NULL, &dst);
+  SDL_DestroyTexture(texture);
+}
+
 void IoMod::writeText(const std::string& msg, int x, int y, SDL_Color colo) const {
   SDL_Surface* surface =
     TTF_RenderText_Solid(font, msg.c_str(), colo);

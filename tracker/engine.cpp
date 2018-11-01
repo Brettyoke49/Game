@@ -21,7 +21,8 @@ Engine::~Engine() {
 Engine::Engine() :
   rc( RenderContext::getInstance() ),
   io( IoMod::getInstance() ),
-  gdata(Gamedata::getInstance()),
+  gdata( Gamedata::getInstance() ),
+  hud( Hud::getInstance() ),
   clock( Clock::getInstance() ),
   renderer( rc.getRenderer() ),
   front("front", Gamedata::getInstance().getXmlInt("front/factor") ),
@@ -44,15 +45,6 @@ Engine::Engine() :
   std::cout << "Loading complete" << std::endl;
 }
 
-void Engine::printFps() const {
-  std::stringstream fpsout;
-  fpsout << "FPS: " << clock.getFps();
-  //Data driven info placement
-  IoMod::getInstance().writeText(fpsout.str(), hudX, hudY);
-  IoMod::getInstance().writeText("Brett Probert", hudX, hudY + 30,
-    {0xff, 0, 200, 200} );
-}
-
 void Engine::draw() const {
   back.draw();
   front.draw();
@@ -62,7 +54,7 @@ void Engine::draw() const {
   }
 
   player->draw();
-  printFps();
+  hud.draw(clock.getFps());
   SDL_RenderPresent(renderer);
 }
 
@@ -98,8 +90,8 @@ void Engine::play() {
           if ( clock.isPaused() ) clock.unpause();
           else clock.pause();
         }
-        if ( keystate[SDL_SCANCODE_T] ) {
-          std::cout << "Do something with T\n";
+        if ( keystate[SDL_SCANCODE_F1] ) {
+          hud.toggle();
         }
         if ( keystate[SDL_SCANCODE_W] ) {
           player->jump();
