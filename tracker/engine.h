@@ -5,13 +5,13 @@
 #include "clock.h"
 #include "world.h"
 #include "viewport.h"
+#include "player.h"
 
 class Engine {
 public:
   Engine ();
   ~Engine ();
   void play();
-  void switchSprite();
 
 private:
   const RenderContext& rc;
@@ -24,6 +24,7 @@ private:
   World back;
   Viewport& viewport;
 
+  Player* player;
   std::vector<Drawable*> sprites;
   int currentSprite;
 

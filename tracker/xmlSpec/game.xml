@@ -18,7 +18,7 @@
 </view>
 
 <world>
-  <width>4000</width>
+  <width>2000</width>
   <height>1000</height>
 </world>
 
@@ -44,12 +44,12 @@
 </font>
 
 <Skeleton>
-  <number>1</number>
-  <startLoc x="50" y="140"/>
+  <scale>4.0</scale>
+  <startLoc x="50" y="825"/>
   <frames>13</frames>
   <frameInterval>50</frameInterval>
-  <speedX>200</speedX>
-  <speedY>-400</speedY>
+  <speedX>250</speedX>
+  <speedY>600</speedY>
   <transparency>true</transparency>
 </Skeleton>
 
@@ -67,26 +67,16 @@
 
 <Ghost>
   <file>assets/ghost.png</file>
-  <number>1</number>
-  <startLoc x="227" y="240"/>
-  <speedX>300</speedX>
-  <speedY>300</speedY>
+  <number>9</number>
+  <startLoc x="1500" y="500"/>
+  <speedX>250</speedX>
+  <speedY>250</speedY>
   <transparency>false</transparency>
 </Ghost>
 
-<Penor>
-  <file>assets/penor_animation.png</file>
-  <startLoc x="50" y="140"/>
-  <frames>5</frames>
-  <frameInterval>200</frameInterval>
-  <speedX>200</speedX>
-  <speedY>200</speedY>
-  <transparency>false</transparency>
-</Penor>
-
 <HUD>
   <x>30</x>
-  <y>420</y>
+  <y>920</y>
 </HUD>
 
 </GameData>

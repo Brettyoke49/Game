@@ -27,25 +27,20 @@ Engine::Engine() :
   front("front", Gamedata::getInstance().getXmlInt("front/factor") ),
   back("back", Gamedata::getInstance().getXmlInt("back/factor") ),
   viewport( Viewport::getInstance() ),
+  player(new Player("Skeleton")),
   sprites {
-    new TwoWayMultiSprite("Skeleton"),
-    new Sprite("Ghost"),
-    new MultiSprite("Penor")
+    new Sprite("Ghost")
   },
   currentSprite(0),
   makeVideo( false ),
   hudX(gdata.getXmlInt("HUD/x")),
   hudY(gdata.getXmlInt("HUD/y"))
 {
-  for(int i = 0; i < static_cast<TwoWayMultiSprite*>(sprites[0])->number - 1; i++) {
-    sprites.emplace_back(new TwoWayMultiSprite("Skeleton"));
-  }
-
-  for(int i = 0; i < static_cast<Sprite*>(sprites[1])->number - 1; i++) {
+  for(int i = 0; i < static_cast<Sprite*>(sprites[0])->number - 1; i++) {
     sprites.emplace_back(new Sprite("Ghost"));
   }
 
-  Viewport::getInstance().setObjectToTrack(sprites[0]);
+  Viewport::getInstance().setObjectToTrack(player);
   std::cout << "Loading complete" << std::endl;
 }
 
@@ -66,6 +61,7 @@ void Engine::draw() const {
     i->draw();
   }
 
+  player->draw();
   viewport.draw();
   printFps();
   SDL_RenderPresent(renderer);
@@ -75,16 +71,11 @@ void Engine::update(Uint32 ticks) {
   for(auto i : sprites) {
     i->update(ticks);
   }
+  player->update(ticks);
 
   back.update();
   front.update();
   viewport.update(); // always update viewport last
-}
-
-void Engine::switchSprite(){
-  ++currentSprite;
-  currentSprite = currentSprite % sprites.size();
-  Viewport::getInstance().setObjectToTrack(sprites[currentSprite]);
 }
 
 void Engine::play() {
@@ -109,7 +100,10 @@ void Engine::play() {
           else clock.pause();
         }
         if ( keystate[SDL_SCANCODE_T] ) {
-          switchSprite();
+          std::cout << "Do something with T\n";
+        }
+        if ( keystate[SDL_SCANCODE_W] ) {
+          player->jump();
         }
         if (keystate[SDL_SCANCODE_F4] && !makeVideo) {
           std::cout << "Initiating frame capture" << std::endl;
@@ -132,6 +126,15 @@ void Engine::play() {
       update(ticks);
       if ( makeVideo ) {
         frameGen.makeFrame();
+      }
+      if ( keystate[SDL_SCANCODE_A] ) {
+        player->left();
+      }
+      if ( keystate[SDL_SCANCODE_S] ) {
+        //No function... for now.
+      }
+      if ( keystate[SDL_SCANCODE_D] ) {
+        player->right();
       }
     }
   }
