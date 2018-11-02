@@ -4,42 +4,29 @@ Course: CPSC 4160
 
 Clemson Email Address: bmprobe@g.clemson.edu
 
-Project no: 3
+Project no: 4
 
-Project due date: Oct. 15, 2018
+Project due date: November 2, 2018
 
 Project description:
-  This project contains all of the changes laid out as required in paper.pdf.
-That consists mostly of code beutification with minimal functional impact,
-save for #6 and 8. For those I implemented parallax scrolling and a two way
-multisprite class. I also updated the background and sprites to those I chose
-/made.
+  This project implements a player object, a toggleable HUD, enemy "AI",
+  and collision detection. The player can move left and right and jump. The HUD
+  is configurable via the xml file (color, location, and size). A collision causes
+  the player to dissapear for a brief time (death animations to be added later), and
+  finally the AI simply means running away from the player when too close. I hope to
+  do more with that as time goes on.
 
 Where I got my sprites:
-I made the ghost sprite.
-The skeleton sprite is from: https://jesse-m.itch.io/skeleton-pack
+  I made the ghost sprite.
+  The skeleton sprite is from: https://jesse-m.itch.io/skeleton-pack
 
-I do plan on going back and making my own sprites instead of using others',
-but I was a bit crunched for time for project 3 (as you can tell by the turn
-in time).
+Final game level description:
+  For the final game level, I plan on using theme same sprites plus one more. I intend to
+  add some kind of glowing ball (spirit kinda thing) that goes back and forth at the top of
+  the screen. My idea is that killing a ghost only yields to two more spawning. In order for
+  ghosts to stay dead, the orb object must first be killed. Ideally it will have health, and
+  be somewhat difficult to hit (especially with the ghosts flying around).
 
-
-How many backgrounds do I have:
-2 backgrounds. One I mostly made, after finding the simple brick base online,
-and the other being a realistic background to kind of juxtapose the pixelized
-foreground. Taken from: http://getwallpapers.com/collection/scary-forest-wallpaper
-
-What sprite did I create (not Sprite or MultiSprite):
-Two Way MultiSprite
-
-
-The easiest part of this project:
-Adding = delete to two class' constructors.
-
-
-Problems that I had in completing this project:
-
-I struggled for a bit with coming up with a way to allow the specification of the number
-of sprite instances desired in the xml spreadsheet. Making them spawn with different
-velocities was easy, using rand. But coming up with an efficient way to make them in the
-engine (especially since we had to use a vector of Drawable* objects) took me a little while.
+  The game will conclude when all ghosts are dead, which should hopefully be sufficiently
+  challenging. Losing all of your health/lives as a player will also end the game. Since the
+  # of ghosts is configurable, the difficulty of the game is data driven.
