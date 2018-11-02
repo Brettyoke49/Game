@@ -30,7 +30,7 @@ Engine::Engine() :
   viewport( Viewport::getInstance() ),
   player(new Player("Skeleton")),
   sprites {
-    new Sprite("Ghost")
+    new Sprite("Ghost", player)
   },
   currentSprite(0),
   makeVideo( false ),
@@ -38,7 +38,7 @@ Engine::Engine() :
   hudY(gdata.getXmlInt("HUD/y"))
 {
   for(int i = 0; i < static_cast<Sprite*>(sprites[0])->number - 1; i++) {
-    sprites.emplace_back(new Sprite("Ghost"));
+    sprites.emplace_back(new Sprite("Ghost", player));
   }
 
   Viewport::getInstance().setObjectToTrack(player);
@@ -59,10 +59,11 @@ void Engine::draw() const {
 }
 
 void Engine::update(Uint32 ticks) {
+  player->update(ticks);
+
   for(auto i : sprites) {
     i->update(ticks);
   }
-  player->update(ticks);
 
   back.update();
   front.update();

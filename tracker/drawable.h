@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <iostream>
 #include <string>
+#include <vector>
 #include "vector2f.h"
 #include "image.h"
 
@@ -47,6 +48,11 @@ public:
   void  setVelocityX(float vx) { velocity[0] = vx;   }
   float getVelocityY() const   { return velocity[1]; }
   void  setVelocityY(float vy) { velocity[1] = vy;   }
+
+  virtual const SDL_Surface* getSurface() const = 0;
+
+  virtual void notify(int, int) = 0;
+
 private:
   std::string name;
   Vector2f position;

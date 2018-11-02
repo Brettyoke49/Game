@@ -24,6 +24,7 @@ OBJS = \
 	engine.o \
   player.o \
   hud.o \
+  collisionStrategy.o \
 	main.o
 EXEC = run
 

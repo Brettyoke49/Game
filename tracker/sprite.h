@@ -2,10 +2,12 @@
 #define SPRITE__H
 #include <string>
 #include "drawable.h"
+#include "player.h"
 
 class Sprite : public Drawable {
 public:
   Sprite(const std::string&);
+  Sprite(const std::string&, Player* subject);
   Sprite(const std::string&, const Vector2f& pos, const Vector2f& vel,
          const Image*);
   Sprite(const Sprite&);
@@ -21,12 +23,17 @@ public:
   }
   int getScaledWidth()  const { return getScale()*image->getWidth();  }
   int getScaledHeight() const { return getScale()*image->getHeight(); }
+  void notify(int, int);
 
   int number;
 
 private:
   const Image * image;
   static int count;
+
+  Player* subject;
+  int subjPos[2];
+  bool escaping;
 
 protected:
   int worldWidth;

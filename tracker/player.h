@@ -25,6 +25,10 @@ public:
   virtual const SDL_Surface* getSurface() const {
     return images[leftOrRight][currentFrame]->getSurface();
   }
+  void attach(Drawable* obs);
+  bool collided(const std::vector<Drawable*>);
+  void notify(int, int) { }
+
 
   void right();
   void left();
@@ -36,6 +40,7 @@ private:
   std::vector<Image *> imagesLeft;
   std::vector<Image *> imagesRight;
   std::vector<std::vector<Image *>> images;
+  std::vector<Drawable*> observers;
 
   bool jumping;
   int scale;
@@ -50,8 +55,8 @@ private:
   int baseY;
   Vector2f initialVelocity;
 
+  void notifyObservers();
   void advanceFrame(Uint32 ticks);
   Player& operator=(const Player&);
 };
 #endif
-

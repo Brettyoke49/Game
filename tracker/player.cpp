@@ -31,6 +31,7 @@ Player::Player( const std::string& name) :
   imagesLeft( ImageFactory::getInstance().getImages(name + "Left") ),
   imagesRight( ImageFactory::getInstance().getImages(name + "Right") ),
   images{ imagesLeft, imagesRight },
+  observers(),
 
   jumping( false ),
   scale( Gamedata::getInstance().getXmlFloat(name + "/scale") ),
@@ -53,6 +54,7 @@ Player::Player(const Player& s) :
   imagesLeft(s.imagesLeft),
   imagesRight(s.imagesRight),
   images(s.images),
+  observers(s.observers),
   jumping(s.jumping),
   scale(s.scale),
   leftOrRight(s.leftOrRight),
@@ -73,6 +75,7 @@ Player& Player::operator=(const Player& s) {
   imagesLeft = (s.imagesLeft);
   imagesRight = (s.imagesRight);
   images = (s.images);
+  observers = (s.observers),
   jumping = (s.jumping);
   scale = (s.scale);
   leftOrRight = (s.leftOrRight);
@@ -90,6 +93,21 @@ Player& Player::operator=(const Player& s) {
 
 void Player::draw() const {
   images[leftOrRight][currentFrame]->draw(getX(), getY(), getScale());
+}
+
+void Player::attach(Drawable* obs) {
+  observers.push_back(obs);
+}
+
+void Player::notifyObservers() {
+  for(auto o : observers) {
+    o->notify(getX(), getY());
+  }
+}
+
+bool collided(const std::vector<Drawable*>) {
+  std::cout << "test" << std::endl;
+  return false;
 }
 
 void Player::stop() {
@@ -153,6 +171,7 @@ void Player::update(Uint32 ticks) {
     setVelocityX( -fabs( getVelocityX() ) );
   }
 
+  notifyObservers();
   stop();
 }
 
