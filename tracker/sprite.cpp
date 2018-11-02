@@ -115,16 +115,16 @@ void Sprite::update(Uint32 ticks) {
   Vector2f incr = getVelocity() * static_cast<float>(ticks) * 0.001;
   setPosition(getPosition() + incr);
 
-  if(std::abs(getX() - subjPos[0]) < 100 &&
-     std::abs(getY() - subjPos[1]) < 100 &&
+  if(std::abs(getX() - subjPos[0]) < 150 &&
+     std::abs(getY() - subjPos[1]) < 150 &&
      !escaping) {
     escaping = true;
     setVelocityX( -getVelocityX() );
     setVelocityY( -getVelocityY() );
   }
   else {
-    if(std::abs(getX() - subjPos[0]) > 100 &&
-       std::abs(getY() - subjPos[1]) > 100) {
+    if(std::abs(getX() - subjPos[0]) > 150 &&
+       std::abs(getY() - subjPos[1]) > 150) {
       escaping = false;
     }
     if ( getY() < 0) {

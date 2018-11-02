@@ -4,6 +4,7 @@
 #include <vector>
 #include <cmath>
 #include "drawable.h"
+#include "collisionStrategy.h"
 
 class Player : public Drawable {
 public:
@@ -26,7 +27,7 @@ public:
     return images[leftOrRight][currentFrame]->getSurface();
   }
   void attach(Drawable* obs);
-  bool collided(const std::vector<Drawable*>);
+  bool collided();
   void notify(int, int) { }
 
 
@@ -37,12 +38,15 @@ public:
   void stop();
 
 private:
+  PerPixelCollisionStrategy collDetector;
+
   std::vector<Image *> imagesLeft;
   std::vector<Image *> imagesRight;
   std::vector<std::vector<Image *>> images;
   std::vector<Drawable*> observers;
 
   bool jumping;
+  bool dead;
   int scale;
   int leftOrRight;
   unsigned currentFrame;

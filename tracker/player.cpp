@@ -28,12 +28,14 @@ Player::Player( const std::string& name) :
            Vector2f(0,0)
           ),
 
+  collDetector(),
   imagesLeft( ImageFactory::getInstance().getImages(name + "Left") ),
   imagesRight( ImageFactory::getInstance().getImages(name + "Right") ),
   images{ imagesLeft, imagesRight },
   observers(),
 
   jumping( false ),
+  dead( false ),
   scale( Gamedata::getInstance().getXmlFloat(name + "/scale") ),
   leftOrRight(0),
   currentFrame(0),
@@ -51,11 +53,13 @@ Player::Player( const std::string& name) :
 
 Player::Player(const Player& s) :
   Drawable(s),
+  collDetector(s.collDetector),
   imagesLeft(s.imagesLeft),
   imagesRight(s.imagesRight),
   images(s.images),
   observers(s.observers),
   jumping(s.jumping),
+  dead(s.dead),
   scale(s.scale),
   leftOrRight(s.leftOrRight),
   currentFrame(s.currentFrame),
@@ -72,11 +76,13 @@ Player::Player(const Player& s) :
 
 Player& Player::operator=(const Player& s) {
   Drawable::operator=(s);
+  collDetector = s.collDetector;
   imagesLeft = (s.imagesLeft);
   imagesRight = (s.imagesRight);
   images = (s.images);
   observers = (s.observers),
   jumping = (s.jumping);
+  dead = (s.dead);
   scale = (s.scale);
   leftOrRight = (s.leftOrRight);
   currentFrame = (s.currentFrame);
@@ -92,7 +98,9 @@ Player& Player::operator=(const Player& s) {
 }
 
 void Player::draw() const {
-  images[leftOrRight][currentFrame]->draw(getX(), getY(), getScale());
+  if(!dead) { //When I have time, instead of dissapearing, use death animation
+    images[leftOrRight][currentFrame]->draw(getX(), getY(), getScale());
+  }
 }
 
 void Player::attach(Drawable* obs) {
@@ -103,11 +111,6 @@ void Player::notifyObservers() {
   for(auto o : observers) {
     o->notify(getX(), getY());
   }
-}
-
-bool collided(const std::vector<Drawable*>) {
-  std::cout << "test" << std::endl;
-  return false;
 }
 
 void Player::stop() {
@@ -125,19 +128,25 @@ void Player::stop() {
 }
 
 void Player::right() {
-  if ( getX() < worldWidth-getScaledWidth()) {
-    setVelocityX(initialVelocity[0]);
+  if(!dead) {
+    if ( getX() < worldWidth-getScaledWidth()) {
+      setVelocityX(initialVelocity[0]);
+    }
   }
 }
 void Player::left()  {
-  if ( getX() > 0) {
-    setVelocityX(-initialVelocity[0]);
+  if(!dead) {
+    if ( getX() > 0) {
+      setVelocityX(-initialVelocity[0]);
+    }
   }
 }
 void Player::jump()    {
-  if(!jumping) { //Don't want to stack jumps
-    jumping = true;
-    setVelocityY( -initialVelocity[1] );
+  if(!dead) {
+    if(!jumping) { //Don't want to stack jumps
+      jumping = true;
+      setVelocityY( -initialVelocity[1] );
+    }
   }
 }
 void Player::down()  {
@@ -146,11 +155,31 @@ void Player::down()  {
   }
 }
 
+bool Player::collided(){
+  for(auto o : observers) {
+    if(collDetector.execute(*this, *o)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 void Player::update(Uint32 ticks) {
   if(getVelocityX() > 0)
     leftOrRight = 1;
   else
     leftOrRight = 0;
+
+  if(!dead && collided()) {
+    dead = true;
+  }
+  if(dead) {
+    timeSinceLastFrame += ticks;
+    if(timeSinceLastFrame > 5000) {
+      dead = false;
+    }
+  }
+
 
   advanceFrame(ticks);
 
