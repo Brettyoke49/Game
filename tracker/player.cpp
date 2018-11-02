@@ -4,18 +4,26 @@
 
 void Player::advanceFrame(Uint32 ticks) {
   timeSinceLastFrame += ticks;
-  if (timeSinceLastFrame > frameInterval && (getVelocityX() > 5 || getVelocityX() < -5)) {
-    if(getVelocityX() > 5) {
-      currentFrame = (currentFrame+1) % numberOfFrames;
-      timeSinceLastFrame = 0;
+  if(dead) {
+    if(currentFrame < deathFrames - 1 && timeSinceLastFrame / currentFrame > deathFrameInterval) {
+      currentFrame += 1;
     }
-    else { //If moving left, play the frames going backwards so he doesn't moonwalk
-      if(currentFrame == 0)
-        currentFrame = numberOfFrames - 1;
-      else
-        currentFrame = currentFrame - 1;
+  }
+  else {
+    if(currentFrame > walkFrames) { currentFrame = 0; }
+    if (timeSinceLastFrame > frameInterval && (getVelocityX() > 5 || getVelocityX() < -5)) {
+      if(getVelocityX() > 5) {
+        currentFrame = (currentFrame+1) % walkFrames;
+        timeSinceLastFrame = 0;
+      }
+      else { //If moving left, play the frames going backwards so he doesn't moonwalk
+        if(currentFrame == 0)
+          currentFrame = walkFrames - 1;
+        else
+          currentFrame = currentFrame - 1;
 
-      timeSinceLastFrame = 0;
+        timeSinceLastFrame = 0;
+      }
     }
   }
 }
@@ -31,16 +39,19 @@ Player::Player( const std::string& name) :
   collDetector(),
   imagesLeft( ImageFactory::getInstance().getImages(name + "Left") ),
   imagesRight( ImageFactory::getInstance().getImages(name + "Right") ),
-  images{ imagesLeft, imagesRight },
+  imagesDeath( ImageFactory::getInstance().getImages(name + "Death") ),
+  images{ imagesLeft, imagesRight, imagesDeath },
   observers(),
 
   jumping( false ),
   dead( false ),
   scale( Gamedata::getInstance().getXmlFloat(name + "/scale") ),
-  leftOrRight(0),
+  action(0),
   currentFrame(0),
-  numberOfFrames( Gamedata::getInstance().getXmlInt(name+"/frames") ),
+  walkFrames( Gamedata::getInstance().getXmlInt(name+"/frames") ),
+  deathFrames( Gamedata::getInstance().getXmlInt(name + "Death/frames") ),
   frameInterval( Gamedata::getInstance().getXmlInt(name+"/frameInterval")),
+  deathFrameInterval( Gamedata::getInstance().getXmlInt(name + "Death/frameInterval")),
   timeSinceLastFrame( 0 ),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height")),
@@ -56,15 +67,18 @@ Player::Player(const Player& s) :
   collDetector(s.collDetector),
   imagesLeft(s.imagesLeft),
   imagesRight(s.imagesRight),
+  imagesDeath(s.imagesDeath),
   images(s.images),
   observers(s.observers),
   jumping(s.jumping),
   dead(s.dead),
   scale(s.scale),
-  leftOrRight(s.leftOrRight),
+  action(s.action),
   currentFrame(s.currentFrame),
-  numberOfFrames( s.numberOfFrames ),
+  walkFrames( s.walkFrames ),
+  deathFrames( s.deathFrames ),
   frameInterval( s.frameInterval ),
+  deathFrameInterval( s.deathFrameInterval ),
   timeSinceLastFrame( s.timeSinceLastFrame ),
   worldWidth( s.worldWidth ),
   worldHeight( s.worldHeight ),
@@ -79,15 +93,18 @@ Player& Player::operator=(const Player& s) {
   collDetector = s.collDetector;
   imagesLeft = (s.imagesLeft);
   imagesRight = (s.imagesRight);
+  imagesDeath = (s.imagesDeath);
   images = (s.images);
   observers = (s.observers),
   jumping = (s.jumping);
   dead = (s.dead);
   scale = (s.scale);
-  leftOrRight = (s.leftOrRight);
+  action = (s.action);
   currentFrame = (s.currentFrame);
-  numberOfFrames = ( s.numberOfFrames );
+  walkFrames = ( s.walkFrames );
+  deathFrames = ( s.deathFrames );
   frameInterval = ( s.frameInterval );
+  deathFrameInterval = ( s.deathFrameInterval );
   timeSinceLastFrame = ( s.timeSinceLastFrame );
   worldWidth = ( s.worldWidth );
   worldHeight = ( s.worldHeight );
@@ -98,9 +115,7 @@ Player& Player::operator=(const Player& s) {
 }
 
 void Player::draw() const {
-  if(!dead) { //When I have time, instead of dissapearing, use death animation
-    images[leftOrRight][currentFrame]->draw(getX(), getY(), getScale());
-  }
+    images[action][currentFrame]->draw(getX(), getY(), getScale());
 }
 
 void Player::attach(Drawable* obs) {
@@ -165,13 +180,16 @@ bool Player::collided(){
 }
 
 void Player::update(Uint32 ticks) {
-  if(getVelocityX() > 0)
-    leftOrRight = 1;
+  if(dead)
+    action = 2;
+  else if(getVelocityX() > 0)
+    action = 1;
   else
-    leftOrRight = 0;
+    action = 0;
 
   if(!dead && collided()) {
     dead = true;
+    currentFrame = 0;
   }
   if(dead) {
     timeSinceLastFrame += ticks;

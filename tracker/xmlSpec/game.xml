@@ -65,6 +65,13 @@
   <transparency>true</transparency>
 </SkeletonRight>
 
+<SkeletonDeath>
+  <file>assets/skelDeath.png</file>
+  <frames>15</frames>
+  <transparency>true</transparency>
+  <frameInterval>250</frameInterval>
+</SkeletonDeath>
+
 <Ghost>
   <file>assets/ghost.png</file>
   <number>9</number>
