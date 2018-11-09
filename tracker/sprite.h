@@ -33,12 +33,14 @@ private:
 
   Player* subject;
   int subjPos[2];
-  bool escaping;
+  bool attacking;
+  bool resetting;
+  int startPos[2];
 
-protected:
   int worldWidth;
   int worldHeight;
 
+  void attack();
   int getDistance(const Sprite*) const;
   Vector2f makeVelocity(int, int) const;
 };

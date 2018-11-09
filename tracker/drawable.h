@@ -53,8 +53,10 @@ public:
 
   virtual void notify(int, int) = 0;
 
-private:
+protected:
   std::string name;
+
+private:
   Vector2f position;
   Vector2f velocity;
   float scale;

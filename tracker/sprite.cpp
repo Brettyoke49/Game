@@ -20,7 +20,8 @@ Sprite::Sprite(const string& n, const Vector2f& pos, const Vector2f& vel,
   number( Gamedata::getInstance().getXmlInt(n+"/number")),
   image( img ),
   subject(nullptr),
-  escaping(false),
+  attacking(false),
+  resetting(false),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 { }
@@ -36,7 +37,8 @@ Sprite::Sprite(const std::string& name) :
   number( Gamedata::getInstance().getXmlInt(name+"/number")),
   image( ImageFactory::getInstance().getImage(name) ),
   subject(nullptr),
-  escaping(false),
+  attacking(false),
+  resetting(false),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 {
@@ -44,10 +46,18 @@ Sprite::Sprite(const std::string& name) :
     srand(time(NULL));
     count++;
   }
-  Vector2f vel = Drawable::getVelocity();
-  vel[0] += (rand() % 401) - 200;
-  vel[1] += (rand() % 401) - 200;
-  Drawable::setVelocity(vel);
+  //Some initial randomization, works with data driven xml stuff
+  Vector2f vel = getVelocity();
+  vel[0] += (rand() % 201) - 100;
+  if(rand() % 2 == 0) vel[0] = -vel[0];
+  setVelocity(vel);
+
+  Vector2f pos = getPosition();
+  pos[0] = (worldWidth - (rand() % worldWidth) + 50);
+  pos[1] += (rand() % 251) - 125;
+  startPos[0] = pos[0];
+  startPos[1] = pos[1];
+  setPosition(pos);
 }
 
 Sprite::Sprite(const std::string& name, Player* subject) :
@@ -61,7 +71,8 @@ Sprite::Sprite(const std::string& name, Player* subject) :
   number( Gamedata::getInstance().getXmlInt(name+"/number")),
   image( ImageFactory::getInstance().getImage(name) ),
   subject(subject),
-  escaping(false),
+  attacking(false),
+  resetting(false),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 {
@@ -70,10 +81,18 @@ Sprite::Sprite(const std::string& name, Player* subject) :
     srand(time(NULL));
     count++;
   }
-  Vector2f vel = Drawable::getVelocity();
-  vel[0] += (rand() % 401) - 200;
-  vel[1] += (rand() % 401) - 200;
-  Drawable::setVelocity(vel);
+  //Some initial randomization, works with data driven xml stuff
+  Vector2f vel = getVelocity();
+  vel[0] += (rand() % 201) - 100;
+  if(rand() % 2 == 0) vel[0] = -vel[0];
+  setVelocity(vel);
+
+  Vector2f pos = getPosition();
+  pos[0] = (worldWidth - (rand() % worldWidth) + 50);
+  pos[1] += (rand() % 251) - 125;
+  startPos[0] = pos[0];
+  startPos[1] = pos[1];
+  setPosition(pos);
 }
 
 Sprite::Sprite(const Sprite& s) :
@@ -81,7 +100,8 @@ Sprite::Sprite(const Sprite& s) :
   number(s.number),
   image(s.image),
   subject(s.subject),
-  escaping(s.escaping),
+  attacking(s.attacking),
+  resetting(s.resetting),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 { }
@@ -91,7 +111,8 @@ Sprite& Sprite::operator=(const Sprite& rhs) {
   number = rhs.number;
   image = rhs.image;
   subject = rhs.subject;
-  escaping = rhs.escaping;
+  attacking = rhs.attacking;
+  resetting = rhs.resetting;
   worldWidth = rhs.worldWidth;
   worldHeight = rhs.worldHeight;
   return *this;
@@ -111,35 +132,48 @@ void Sprite::notify(int x, int y) {
   subjPos[1] = y;
 }
 
+void Sprite::attack() {
+  if(getVelocityY() == 0) {
+    setVelocityY(200);
+  }
+  if(getY() >= worldHeight - 50) {
+    resetting = true;
+    attacking = false;
+  }
+}
+
 void Sprite::update(Uint32 ticks) {
   Vector2f incr = getVelocity() * static_cast<float>(ticks) * 0.001;
   setPosition(getPosition() + incr);
 
-  if(std::abs(getX() - subjPos[0]) < 150 &&
-     std::abs(getY() - subjPos[1]) < 150 &&
-     !escaping) {
-    escaping = true;
-    setVelocityX( -getVelocityX() );
-    setVelocityY( -getVelocityY() );
+  if((attacking || rand() % 500 == 0) && !resetting) {
+    attacking = true;
+    attack();
   }
-  else {
-    if(std::abs(getX() - subjPos[0]) > 150 &&
-       std::abs(getY() - subjPos[1]) > 150) {
-      escaping = false;
+  if(resetting) { //to reset, float back to highground and move left/right
+    if(getVelocityY() != -200) {
+      setVelocityY(-150);
+      setVelocityX(0);
     }
-    if ( getY() < 0) {
-      setVelocityY( std::abs( getVelocityY() ) );
+    if(getY() <= startPos[1]) {
+      setVelocityY(0);
+      setVelocityX(Gamedata::getInstance().getXmlInt(name+"/speedX") + rand() % 201 - 100);
+      resetting = false;
     }
-    if ( getY() > worldHeight-getScaledHeight()) {
-      setVelocityY( -std::abs( getVelocityY() ) );
-    }
+  }
 
-    if ( getX() < 0) {
-      setVelocityX( std::abs( getVelocityX() ) );
-    }
-    if ( getX() > worldWidth-getScaledWidth()) {
-      setVelocityX( -std::abs( getVelocityX() ) );
-    }
+  if ( getY() < 0) {
+    setVelocityY( std::abs( getVelocityY() ) );
+  }
+  if ( getY() > worldHeight-getScaledHeight()) {
+    setVelocityY( -std::abs( getVelocityY() ) );
+  }
+
+  if ( getX() < 0) {
+    setVelocityX( std::abs( getVelocityX() ) );
+  }
+  if ( getX() > worldWidth-getScaledWidth()) {
+    setVelocityX( -std::abs( getVelocityX() ) );
   }
 }
 
