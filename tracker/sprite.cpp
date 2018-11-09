@@ -135,6 +135,8 @@ void Sprite::notify(int x, int y) {
 void Sprite::attack() {
   if(getVelocityY() == 0) {
     setVelocityY(200);
+    //HEY WE WANT TO ATTACK THE PLAYER SO LET'S DO SOME MATH
+    //Use distance over time. Use ticks as a measure of time, calculate the needed X and Y velocities from this. Good luck future Brett
   }
   if(getY() >= worldHeight - 50) {
     resetting = true;
