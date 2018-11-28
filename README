@@ -6,7 +6,7 @@ Clemson Email Address: bmprobe@g.clemson.edu
 
 Project no: 4
 
-Project due date: November 2, 2018
+Project due date: November 9, 2018
 
 Project description:
   This project implements a player object, a toggleable HUD, enemy "AI",
@@ -14,14 +14,14 @@ Project description:
   is configurable via the xml file (color, location, and size). A collision causes
   the player to dissapear for a brief time (death animations to be added later), and
   finally the AI simply means running away from the player when too close. I hope to
-  do more with that as time goes on.
+  do more with that as time goes on. I also added a death animation for player.
 
 Where I got my sprites:
   I made the ghost sprite.
   The skeleton sprite is from: https://jesse-m.itch.io/skeleton-pack
 
 Final game level description:
-  For the final game level, I plan on using theme same sprites plus one more. I intend to
+  For the final game level, I plan on using the same sprites plus one more. I intend to
   add some kind of glowing ball (spirit kinda thing) that goes back and forth at the top of
   the screen. My idea is that killing a ghost only yields to two more spawning. In order for
   ghosts to stay dead, the orb object must first be killed. Ideally it will have health, and

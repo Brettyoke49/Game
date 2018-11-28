@@ -13,7 +13,7 @@
 
 <view>
   <width>1200</width>
-  <height>700</height>
+  <height>1000</height>
   <loc x="30" y="30"/>
 </view>
 
@@ -74,8 +74,8 @@
 
 <Ghost>
   <file>assets/ghost.png</file>
-  <number>25</number>
-  <startLoc x="1500" y="400"/>
+  <number>20</number>
+  <startLoc x="1500" y="200"/>
   <speedX>250</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>
