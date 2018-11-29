@@ -1,3 +1,4 @@
+#pragma once
 #include <list>
 #include "bullet.h"
 #include "collisionStrategy.h"
@@ -9,7 +10,7 @@ public:
   ~BulletPool();
   void draw() const;
   void update(Uint32 ticks);
-  void shoot(const Vector2f& pos, const Vector2f& vel);
+  void shoot(const Vector2f& pos);
 
   unsigned int bulletCount() const { return bulletList.size(); }
   unsigned int freeCount()  const { return freeList.size(); }
@@ -18,6 +19,8 @@ public:
 private:
   std::string name;
   CollisionStrategy* strategy;
+
+  int bulletSpeed;
   float frameInterval;
   float timeSinceLastFrame;
   mutable std::list<Bullet> bulletList; // BulletPool is a list of Bullet

@@ -1,14 +1,15 @@
+#pragma once
 #include <iostream>
-#include "sprite.h"
-#include "gamedata.h"
+#include "baseSprite.h"
+#include "gameData.h"
 
-class Bullet : public Sprite {
+class Bullet : public BaseSprite {
 public:
   explicit Bullet(const string& name) :
-    Sprite(name), 
-    distance(0), 
-    maxDistance(Gamedata::getInstance().getXmlInt(name+"/distance")), 
-    tooFar(false) 
+    BaseSprite(name),
+    distance(0),
+    maxDistance(Gamedata::getInstance().getXmlInt(name+"/distance")),
+    tooFar(false)
   { }
   virtual void update(Uint32 ticks);
   bool goneTooFar() const { return tooFar; }
@@ -16,6 +17,14 @@ public:
     tooFar = false;
     distance = 0;
   }
+  virtual const Image* getImage() const { return frame; }
+  virtual const SDL_Surface* getSurface() const {
+    return frame->getSurface();
+  }
+  int getScaledWidth()  const { return getScale()*frame->getWidth();  }
+  int getScaledHeight() const { return getScale()*frame->getHeight(); }
+
+  void notify(int, int) { }
 
 private:
   float distance;

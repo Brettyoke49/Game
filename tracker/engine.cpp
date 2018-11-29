@@ -97,6 +97,9 @@ void Engine::play() {
         if ( keystate[SDL_SCANCODE_W] ) {
           player->jump();
         }
+        if ( keystate[SDL_SCANCODE_SPACE] ) {
+          player->shoot();
+        }
         if (keystate[SDL_SCANCODE_F4] && !makeVideo) {
           std::cout << "Initiating frame capture" << std::endl;
           makeVideo = true;

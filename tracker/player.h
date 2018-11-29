@@ -5,6 +5,7 @@
 #include <cmath>
 #include "drawable.h"
 #include "collisionStrategy.h"
+#include "bulletPool.h"
 
 class Player : public Drawable {
 public:
@@ -34,11 +35,12 @@ public:
   void right();
   void left();
   void jump();
-  void down();
   void stop();
+  void shoot();
 
 private:
   PerPixelCollisionStrategy collDetector;
+  BulletPool shooter;
 
   std::vector<Image *> imagesLeft;
   std::vector<Image *> imagesRight;

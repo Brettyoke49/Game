@@ -25,9 +25,10 @@ OBJS = \
   player.o \
   hud.o \
   collisionStrategy.o \
-	main.o \
+  baseSprite.o \
   bullet.o \
-  bulletPool.o
+  bulletPool.o \
+	main.o
 EXEC = run
 
 %.o: %.cpp %.h

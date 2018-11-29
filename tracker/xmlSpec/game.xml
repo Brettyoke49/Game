@@ -81,6 +81,16 @@
   <transparency>false</transparency>
 </Ghost>
 
+<Trumpet>
+  <file>assets/trumpetShrunk.png</file>
+  <interval>250</interval>
+  <distance>750</distance>
+  <startLoc x="0" y="0"/>
+  <speedY>-350</speedY>
+  <speedX>0</speedX>
+  <transparency>false</transparency>
+</Trumpet>
+
 <HUD>
   <x>990</x>
   <y>10</y>

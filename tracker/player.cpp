@@ -37,6 +37,7 @@ Player::Player( const std::string& name) :
           ),
 
   collDetector(),
+  shooter("Trumpet"),
   imagesLeft( ImageFactory::getInstance().getImages(name + "Left") ),
   imagesRight( ImageFactory::getInstance().getImages(name + "Right") ),
   imagesDeath( ImageFactory::getInstance().getImages(name + "Death") ),
@@ -65,6 +66,7 @@ Player::Player( const std::string& name) :
 Player::Player(const Player& s) :
   Drawable(s),
   collDetector(s.collDetector),
+  shooter(s.shooter),
   imagesLeft(s.imagesLeft),
   imagesRight(s.imagesRight),
   imagesDeath(s.imagesDeath),
@@ -90,7 +92,7 @@ Player::Player(const Player& s) :
 
 Player& Player::operator=(const Player& s) {
   Drawable::operator=(s);
-  collDetector = s.collDetector;
+  collDetector = (s.collDetector);
   imagesLeft = (s.imagesLeft);
   imagesRight = (s.imagesRight);
   imagesDeath = (s.imagesDeath);
@@ -116,6 +118,7 @@ Player& Player::operator=(const Player& s) {
 
 void Player::draw() const {
     images[action][currentFrame]->draw(getX(), getY(), getScale());
+    shooter.draw();
 }
 
 void Player::attach(Drawable* obs) {
@@ -164,10 +167,9 @@ void Player::jump()    {
     }
   }
 }
-void Player::down()  {
-  if ( getY() < worldHeight-getScaledHeight()) {
-    setVelocityY( initialVelocity[1] );
-  }
+
+void Player::shoot() {
+  shooter.shoot(getPosition());
 }
 
 bool Player::collided(){
@@ -198,6 +200,7 @@ void Player::update(Uint32 ticks) {
     }
   }
 
+  shooter.update(ticks);
 
   advanceFrame(ticks);
 
