@@ -41,6 +41,7 @@ void Hud::draw(int FPS) const {
       "F1 - Toggle HUD",
       "P - Pause",
       "WAD - Move/Jump",
+      "Space - Shoot",
       "F4 - Record"
     };
     int space = 2;

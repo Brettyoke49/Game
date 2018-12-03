@@ -30,6 +30,7 @@ public:
   void attach(Drawable* obs);
   bool collided();
   void notify(int, int) { }
+  void checkBullets();
 
 
   void right();

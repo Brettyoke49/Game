@@ -4,17 +4,20 @@ Course: CPSC 4160
 
 Clemson Email Address: bmprobe@g.clemson.edu
 
-Project no: 4
+Project no: 5
 
-Project due date: November 9, 2018
+Project due date: December 5, 2018
 
 Project description:
-  This project implements a player object, a toggleable HUD, enemy "AI",
-  and collision detection. The player can move left and right and jump. The HUD
-  is configurable via the xml file (color, location, and size). A collision causes
-  the player to dissapear for a brief time (death animations to be added later), and
-  finally the AI simply means running away from the player when too close. I hope to
-  do more with that as time goes on. I also added a death animation for player.
+  This project implements shooting, object pooling (for the bullets) and explosions for the
+  enemy ghosts. The HUD has been adjusted to show that you can now shoot. Other than that the
+  changes are fairly self explanatory, as it was just a matter of getting Dr. Malloy's code
+  in line with mine, which only caused a few minor hiccups.
+
+  Regarding the 8 bit trumpet that he shoots as "bullets", that is a reference to a popular
+  meme called "mr skeltal" or "doot doot". While it looks a bit silly, it does fit in with
+  the theme if you spend enough time on the internet. I may or may not change it later to
+  something that fits better.
 
 Where I got my sprites:
   I made the ghost sprite.

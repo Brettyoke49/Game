@@ -4,6 +4,8 @@
 #include "drawable.h"
 #include "player.h"
 
+class ExplodingSprite;
+
 class Sprite : public Drawable {
 public:
   Sprite(const std::string&);
@@ -11,8 +13,8 @@ public:
   Sprite(const std::string&, const Vector2f& pos, const Vector2f& vel,
          const Image*);
   Sprite(const Sprite&);
-  virtual ~Sprite() { }
   Sprite& operator=(const Sprite&);
+  ~Sprite();
 
   virtual void draw() const;
   virtual void update(Uint32 ticks);
@@ -25,10 +27,14 @@ public:
   int getScaledHeight() const { return getScale()*image->getHeight(); }
   void notify(int, int);
 
+  virtual void explode();
+  bool isDead();
+
   int number;
 
 private:
   const Image * image;
+  ExplodingSprite* explosion;
   static int count;
 
   Player* subject;

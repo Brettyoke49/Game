@@ -1,6 +1,7 @@
 #include "player.h"
 #include "gameData.h"
 #include "imageFactory.h"
+#include "sprite.h"
 
 void Player::advanceFrame(Uint32 ticks) {
   timeSinceLastFrame += ticks;
@@ -169,16 +170,25 @@ void Player::jump()    {
 }
 
 void Player::shoot() {
-  shooter.shoot(getPosition());
+  Vector2f shootSpot(getX() + 30, getY() + 20);
+  shooter.shoot(shootSpot);
 }
 
 bool Player::collided(){
   for(auto o : observers) {
-    if(collDetector.execute(*this, *o)) {
+    if(collDetector.execute(*this, *o) && !dynamic_cast<Sprite*>(o)->isDead()) {
       return true;
     }
   }
   return false;
+}
+
+void Player::checkBullets() {
+  for(auto o : observers) {
+    if(!dynamic_cast<Sprite*>(o)->isDead() && shooter.collidedWith(o)) {
+      dynamic_cast<Sprite*>(o)->explode();
+    }
+  }
 }
 
 void Player::update(Uint32 ticks) {
@@ -188,6 +198,8 @@ void Player::update(Uint32 ticks) {
     action = 1;
   else
     action = 0;
+
+  checkBullets();
 
   if(!dead && collided()) {
     dead = true;

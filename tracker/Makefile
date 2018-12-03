@@ -6,6 +6,7 @@ CXXFLAGS=`sdl2-config --cflags` -g -W -Wall -Werror -std=c++11 -Weffc++ -Wextra 
 LDFLAGS =`sdl2-config --libs` -lm -lexpat -lSDL2_ttf -lSDL2_image
 
 OBJS = \
+  explodingSprite.o \
   renderContext.o \
 	ioMod.o \
 	parseXML.o \
@@ -28,6 +29,7 @@ OBJS = \
   baseSprite.o \
   bullet.o \
   bulletPool.o \
+  chunk.o \
 	main.o
 EXEC = run
 

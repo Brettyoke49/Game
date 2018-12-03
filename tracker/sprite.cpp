@@ -4,6 +4,9 @@
 #include "sprite.h"
 #include "gameData.h"
 #include "imageFactory.h"
+#include "explodingSprite.h"
+
+Sprite::~Sprite() { if (explosion) delete explosion; }
 
 Vector2f Sprite::makeVelocity(int vx, int vy) const {
   float newvx = Gamedata::getInstance().getRandFloat(vx-50,vx+50);;
@@ -19,6 +22,7 @@ Sprite::Sprite(const string& n, const Vector2f& pos, const Vector2f& vel,
   Drawable(n, pos, vel),
   number( Gamedata::getInstance().getXmlInt(n+"/number")),
   image( img ),
+  explosion(nullptr),
   subject(nullptr),
   attacking(false),
   resetting(false),
@@ -36,6 +40,7 @@ Sprite::Sprite(const std::string& name) :
            ),
   number( Gamedata::getInstance().getXmlInt(name+"/number")),
   image( ImageFactory::getInstance().getImage(name) ),
+  explosion(nullptr),
   subject(nullptr),
   attacking(false),
   resetting(false),
@@ -70,6 +75,7 @@ Sprite::Sprite(const std::string& name, Player* subject) :
            ),
   number( Gamedata::getInstance().getXmlInt(name+"/number")),
   image( ImageFactory::getInstance().getImage(name) ),
+  explosion(nullptr),
   subject(subject),
   attacking(false),
   resetting(false),
@@ -99,6 +105,7 @@ Sprite::Sprite(const Sprite& s) :
   Drawable(s),
   number(s.number),
   image(s.image),
+  explosion(s.explosion),
   subject(s.subject),
   attacking(s.attacking),
   resetting(s.resetting),
@@ -110,6 +117,7 @@ Sprite& Sprite::operator=(const Sprite& rhs) {
   Drawable::operator=( rhs );
   number = rhs.number;
   image = rhs.image;
+  explosion = rhs.explosion;
   subject = rhs.subject;
   attacking = rhs.attacking;
   resetting = rhs.resetting;
@@ -122,9 +130,23 @@ inline namespace{
   constexpr float SCALE_EPSILON = 2e-7;
 }
 
+void Sprite::explode() {
+  if ( !explosion ) explosion = new ExplodingSprite(*this);
+}
+
+bool Sprite::isDead() {
+  if (explosion)
+    return true;
+  else
+    return false;
+}
+
 void Sprite::draw() const {
-  if(getScale() < SCALE_EPSILON) return;
-  image->draw(getX(), getY(), getScale());
+  if (getScale() < SCALE_EPSILON) return;
+  if (explosion)
+    explosion->draw();
+  else
+    image->draw(getX(), getY(), getScale());
 }
 
 void Sprite::notify(int x, int y) {
@@ -144,6 +166,15 @@ void Sprite::attack() {
 }
 
 void Sprite::update(Uint32 ticks) {
+  if ( explosion ) {
+    explosion->update(ticks);
+    if ( explosion->chunkCount() == 0 ) {
+      delete explosion;
+      explosion = nullptr;
+    }
+    return;
+  }
+
   Vector2f incr = getVelocity() * static_cast<float>(ticks) * 0.001;
   setPosition(getPosition() + incr);
 

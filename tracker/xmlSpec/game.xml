@@ -74,17 +74,22 @@
 
 <Ghost>
   <file>assets/ghost.png</file>
-  <number>20</number>
+  <number>15</number>
   <startLoc x="1500" y="200"/>
   <speedX>250</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>
+  <chunk>
+    <size>30</size>
+    <distance>75</distance>
+    <number>50000</number>
+  </chunk>
 </Ghost>
 
 <Trumpet>
   <file>assets/trumpetShrunk.png</file>
   <interval>250</interval>
-  <distance>750</distance>
+  <distance>850</distance>
   <startLoc x="0" y="0"/>
   <speedY>-350</speedY>
   <speedX>0</speedX>
@@ -95,7 +100,7 @@
   <x>990</x>
   <y>10</y>
   <width>200</width>
-  <height>160</height>
+  <height>180</height>
   <r>100</r>
   <g>0</g>
   <b>0</b>
