@@ -39,9 +39,12 @@ void Hud::draw(int FPS) const {
 
     std::vector<string> menuItems = {
       "F1 - Toggle HUD",
-      "P - Pause",
       "WAD - Move/Jump",
+      "S - Fast Fall",
       "Space - Shoot",
+      "P - Pause",
+      "R - Restart",
+      "G - Toggle God Mode",
       "F4 - Record"
     };
     int space = 2;

@@ -1,17 +1,20 @@
-#ifndef MULTISPRITE__H
-#define MULTISPRITE__H
+#pragma once
 #include <string>
 #include <vector>
 #include <cmath>
 #include "drawable.h"
+#include "player.h"
+#include "healthBar.h"
 
-class MultiSprite : public Drawable {
+class Boss : public Drawable {
 public:
-  MultiSprite(const std::string&);
-  MultiSprite(const MultiSprite&);
+  Boss(const std::string&);
+  Boss(const Boss&);
+  Boss(const std::string&, Player* subject);
 
   virtual void draw() const;
-  virtual void update(Uint32 ticks);
+  void update(Uint32) { }
+  bool update(Uint32, bool);
 
   virtual const Image* getImage() const {
     return images[currentFrame];
@@ -26,8 +29,15 @@ public:
     return images[currentFrame]->getSurface();
   }
 
+  void hit();
+
+  void notify(int, int) { }
+
 protected:
   std::vector<Image *> images;
+
+  Player* subject;
+  HealthBar healthBar;
 
   unsigned currentFrame;
   unsigned numberOfFrames;
@@ -35,8 +45,10 @@ protected:
   float timeSinceLastFrame;
   int worldWidth;
   int worldHeight;
+  int hitCount;
+
+  bool alive;
 
   void advanceFrame(Uint32 ticks);
-  MultiSprite& operator=(const MultiSprite&);
+  Boss& operator=(const Boss&);
 };
-#endif

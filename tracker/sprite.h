@@ -27,6 +27,8 @@ public:
   int getScaledHeight() const { return getScale()*image->getHeight(); }
   void notify(int, int);
 
+  static bool bossAlive;
+
   virtual void explode();
   bool isDead();
 
@@ -41,6 +43,7 @@ private:
   int subjPos[2];
   bool attacking;
   bool resetting;
+  bool dead;
   int startPos[2];
 
   int worldWidth;

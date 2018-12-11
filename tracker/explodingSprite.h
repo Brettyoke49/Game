@@ -1,5 +1,4 @@
-// This is the "pointers" example in the Brian example
-
+#pragma once
 #include <vector>
 #include <list>
 #include "chunk.h"

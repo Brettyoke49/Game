@@ -6,6 +6,8 @@
 #include "imageFactory.h"
 #include "explodingSprite.h"
 
+bool Sprite::bossAlive = true;
+
 Sprite::~Sprite() { if (explosion) delete explosion; }
 
 Vector2f Sprite::makeVelocity(int vx, int vy) const {
@@ -26,6 +28,7 @@ Sprite::Sprite(const string& n, const Vector2f& pos, const Vector2f& vel,
   subject(nullptr),
   attacking(false),
   resetting(false),
+  dead(false),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 { }
@@ -44,6 +47,7 @@ Sprite::Sprite(const std::string& name) :
   subject(nullptr),
   attacking(false),
   resetting(false),
+  dead(false),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 {
@@ -79,6 +83,7 @@ Sprite::Sprite(const std::string& name, Player* subject) :
   subject(subject),
   attacking(false),
   resetting(false),
+  dead(false),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 {
@@ -109,6 +114,7 @@ Sprite::Sprite(const Sprite& s) :
   subject(s.subject),
   attacking(s.attacking),
   resetting(s.resetting),
+  dead(s.dead),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 { }
@@ -121,6 +127,7 @@ Sprite& Sprite::operator=(const Sprite& rhs) {
   subject = rhs.subject;
   attacking = rhs.attacking;
   resetting = rhs.resetting;
+  dead = rhs.dead;
   worldWidth = rhs.worldWidth;
   worldHeight = rhs.worldHeight;
   return *this;
@@ -135,7 +142,7 @@ void Sprite::explode() {
 }
 
 bool Sprite::isDead() {
-  if (explosion)
+  if (explosion || dead)
     return true;
   else
     return false;
@@ -145,8 +152,10 @@ void Sprite::draw() const {
   if (getScale() < SCALE_EPSILON) return;
   if (explosion)
     explosion->draw();
-  else
-    image->draw(getX(), getY(), getScale());
+  else {
+    if(!dead)
+      image->draw(getX(), getY(), getScale());
+  }
 }
 
 void Sprite::notify(int x, int y) {
@@ -166,46 +175,50 @@ void Sprite::attack() {
 }
 
 void Sprite::update(Uint32 ticks) {
-  if ( explosion ) {
-    explosion->update(ticks);
-    if ( explosion->chunkCount() == 0 ) {
-      delete explosion;
-      explosion = nullptr;
+  if(!dead) {
+    if ( explosion ) {
+      explosion->update(ticks);
+      if ( explosion->chunkCount() == 0 ) {
+        if(!bossAlive)
+          dead = true;
+        delete explosion;
+        explosion = nullptr;
+      }
+      return;
     }
-    return;
-  }
 
-  Vector2f incr = getVelocity() * static_cast<float>(ticks) * 0.001;
-  setPosition(getPosition() + incr);
+    Vector2f incr = getVelocity() * static_cast<float>(ticks) * 0.001;
+    setPosition(getPosition() + incr);
 
-  if((attacking || rand() % 500 == 0) && !resetting) {
-    attacking = true;
-    attack();
-  }
-  if(resetting) { //to reset, float back to highground and move left/right
-    if(getVelocityY() != -200) {
-      setVelocityY(-150);
-      setVelocityX(0);
+    if((attacking || rand() % 500 == 0) && !resetting) {
+      attacking = true;
+      attack();
     }
-    if(getY() <= startPos[1]) {
-      setVelocityY(0);
-      setVelocityX(Gamedata::getInstance().getXmlInt(name+"/speedX") + rand() % 201 - 100);
-      resetting = false;
+    if(resetting) { //to reset, float back to highground and move left/right
+      if(getVelocityY() != -200) {
+        setVelocityY(-150);
+        setVelocityX(0);
+      }
+      if(getY() <= startPos[1]) {
+        setVelocityY(0);
+        setVelocityX(Gamedata::getInstance().getXmlInt(name+"/speedX") + rand() % 201 - 100);
+        resetting = false;
+      }
     }
-  }
 
-  if ( getY() < 0) {
-    setVelocityY( std::abs( getVelocityY() ) );
-  }
-  if ( getY() > worldHeight-getScaledHeight()) {
-    setVelocityY( -std::abs( getVelocityY() ) );
-  }
+    if ( getY() < 0) {
+      setVelocityY( std::abs( getVelocityY() ) );
+    }
+    if ( getY() > worldHeight-getScaledHeight()) {
+      setVelocityY( -std::abs( getVelocityY() ) );
+    }
 
-  if ( getX() < 0) {
-    setVelocityX( std::abs( getVelocityX() ) );
-  }
-  if ( getX() > worldWidth-getScaledWidth()) {
-    setVelocityX( -std::abs( getVelocityX() ) );
+    if ( getX() < 0) {
+      setVelocityX( std::abs( getVelocityX() ) );
+    }
+    if ( getX() > worldWidth-getScaledWidth()) {
+      setVelocityX( -std::abs( getVelocityX() ) );
+    }
   }
 }
 

@@ -27,15 +27,18 @@ public:
   virtual const SDL_Surface* getSurface() const {
     return images[action][currentFrame]->getSurface();
   }
-  void attach(Drawable* obs);
+  void attach(Drawable*);
+  void attachBoss(Drawable*);
   bool collided();
   void notify(int, int) { }
   void checkBullets();
+  void toggleGodMode();
 
 
   void right();
   void left();
   void jump();
+  void down();
   void stop();
   void shoot();
 
@@ -45,21 +48,28 @@ private:
 
   std::vector<Image *> imagesLeft;
   std::vector<Image *> imagesRight;
-  std::vector<Image *> imagesDeath; //TODO
+  std::vector<Image *> imagesDeath;
+  std::vector<Image *> imagesInvincible;
   std::vector<std::vector<Image *>> images;
   std::vector<Drawable*> observers;
+  Drawable* boss;
 
   bool jumping;
   bool dead;
+  bool godMode;
   int scale;
   int action;
+  int lives;
   unsigned currentFrame;
   unsigned walkFrames;
-  unsigned deathFrames; //TODO
+  unsigned deathFrames;
+  unsigned invFrames;
 
   unsigned frameInterval;
   unsigned deathFrameInterval;
+  unsigned invFrameInterval;
   float timeSinceLastFrame;
+  int invincibilityPeriod;
   int worldWidth;
   int worldHeight;
 

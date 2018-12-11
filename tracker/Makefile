@@ -18,7 +18,7 @@ OBJS = \
 	imageFactory.o \
 	frameGenerator.o \
 	sprite.o \
-	multisprite.o \
+	boss.o \
   twoWayMultiSprite.o \
 	vector2f.o \
 	clock.o \
@@ -30,6 +30,7 @@ OBJS = \
   bullet.o \
   bulletPool.o \
   chunk.o \
+  healthBar.o \
 	main.o
 EXEC = run
 

@@ -5,7 +5,6 @@
 #include <random>
 #include <iomanip>
 #include "sprite.h"
-#include "multisprite.h"
 #include "twoWayMultiSprite.h"
 #include "gameData.h"
 #include "engine.h"
@@ -29,11 +28,14 @@ Engine::Engine() :
   back("back", Gamedata::getInstance().getXmlInt("back/factor") ),
   viewport( Viewport::getInstance() ),
   player(new Player("Skeleton")),
+  boss(new Boss("Boss", player)),
   sprites {
     new Sprite("Ghost", player)
   },
   currentSprite(0),
+  bossAlive( true ),
   makeVideo( false ),
+  gameOver( false ),
   hudX(gdata.getXmlInt("HUD/x")),
   hudY(gdata.getXmlInt("HUD/y"))
 {
@@ -53,16 +55,32 @@ void Engine::draw() const {
     i->draw();
   }
 
+  if(gameOver) {
+    endGame();
+  }
+
   player->draw();
+  boss->draw();
   hud.draw(clock.getFps());
   SDL_RenderPresent(renderer);
 }
 
 void Engine::update(Uint32 ticks) {
   player->update(ticks);
+  bossAlive = boss->update(ticks, true);
+  bool anyAlive = false;
 
   for(auto i : sprites) {
     i->update(ticks);
+    if(!bossAlive)
+      Sprite::bossAlive = false;
+    if(!dynamic_cast<Sprite*>(i)->isDead()) {
+      anyAlive = true;
+    }
+  }
+
+  if(!anyAlive) {
+    gameOver = true;
   }
 
   back.update();
@@ -70,7 +88,13 @@ void Engine::update(Uint32 ticks) {
   viewport.update(); // always update viewport last
 }
 
-void Engine::play() {
+void Engine::endGame() const {
+  std::string endText = "Congratulations! You have defeated all the ghosts! Press R to"
+    " restart, or ESC to quit.";
+  io.writeText(endText, 150, 500, {255, 50, 50, 0});
+}
+
+bool Engine::play() {
   SDL_Event event;
   const Uint8* keystate;
   bool done = false;
@@ -100,6 +124,13 @@ void Engine::play() {
         if ( keystate[SDL_SCANCODE_SPACE] ) {
           player->shoot();
         }
+        if ( keystate[SDL_SCANCODE_G] ) {
+          player->toggleGodMode();
+        }
+        if ( keystate[SDL_SCANCODE_R] ) {
+          std::cout << "Restarting Game..." << std::endl;
+          return true;
+        }
         if (keystate[SDL_SCANCODE_F4] && !makeVideo) {
           std::cout << "Initiating frame capture" << std::endl;
           makeVideo = true;
@@ -125,12 +156,13 @@ void Engine::play() {
       if ( keystate[SDL_SCANCODE_A] ) {
         player->left();
       }
-      if ( keystate[SDL_SCANCODE_S] ) {
-        //No function... for now.
-      }
       if ( keystate[SDL_SCANCODE_D] ) {
         player->right();
       }
+      if ( keystate[SDL_SCANCODE_S] ) {
+        player->down();
+      }
     }
   }
+  return false;
 }

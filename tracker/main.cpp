@@ -2,13 +2,16 @@
 #include "engine.h"
 
 int main(int, char*[]) {
-   try {
+  bool keepPlaying = true;
+  while(keepPlaying) {
+    try {
       Engine engine;
-      engine.play();
-   }
-   catch (const string& msg) { std::cout << msg << std::endl; }
-   catch (...) {
+      keepPlaying = engine.play();
+    }
+    catch (const string& msg) { std::cout << msg << std::endl; }
+    catch (...) {
       std::cout << "Oops, someone threw an exception!" << std::endl;
-   }
-   return 0;
+    }
+  }
+  return 0;
 }

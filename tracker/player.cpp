@@ -2,12 +2,20 @@
 #include "gameData.h"
 #include "imageFactory.h"
 #include "sprite.h"
+#include "boss.h"
+#include "ioMod.h"
 
 void Player::advanceFrame(Uint32 ticks) {
   timeSinceLastFrame += ticks;
   if(dead) {
     if(currentFrame < deathFrames - 1 && timeSinceLastFrame / currentFrame > deathFrameInterval) {
       currentFrame += 1;
+    }
+  }
+  else if(invincibilityPeriod > 0) {
+    if(timeSinceLastFrame > invFrameInterval) {
+      currentFrame = (currentFrame+1) % invFrames;
+      timeSinceLastFrame = 0;
     }
   }
   else {
@@ -42,19 +50,26 @@ Player::Player( const std::string& name) :
   imagesLeft( ImageFactory::getInstance().getImages(name + "Left") ),
   imagesRight( ImageFactory::getInstance().getImages(name + "Right") ),
   imagesDeath( ImageFactory::getInstance().getImages(name + "Death") ),
-  images{ imagesLeft, imagesRight, imagesDeath },
+  imagesInvincible( ImageFactory::getInstance().getImages(name + "Invincible") ),
+  images{ imagesLeft, imagesRight, imagesDeath, imagesInvincible },
   observers(),
+  boss(nullptr),
 
   jumping( false ),
   dead( false ),
+  godMode( false ),
   scale( Gamedata::getInstance().getXmlFloat(name + "/scale") ),
   action(0),
+  lives( Gamedata::getInstance().getXmlInt(name + "/lives") ),
   currentFrame(0),
   walkFrames( Gamedata::getInstance().getXmlInt(name+"/frames") ),
   deathFrames( Gamedata::getInstance().getXmlInt(name + "Death/frames") ),
+  invFrames( Gamedata::getInstance().getXmlInt(name + "Invincible/frames") ),
   frameInterval( Gamedata::getInstance().getXmlInt(name+"/frameInterval")),
   deathFrameInterval( Gamedata::getInstance().getXmlInt(name + "Death/frameInterval")),
+  invFrameInterval( Gamedata::getInstance().getXmlInt(name + "Invincible/frameInterval")),
   timeSinceLastFrame( 0 ),
+  invincibilityPeriod( 0 ),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height")),
   baseY(Gamedata::getInstance().getXmlInt(name+"/startLoc/y")),
@@ -71,18 +86,25 @@ Player::Player(const Player& s) :
   imagesLeft(s.imagesLeft),
   imagesRight(s.imagesRight),
   imagesDeath(s.imagesDeath),
+  imagesInvincible(s.imagesInvincible),
   images(s.images),
   observers(s.observers),
+  boss(s.boss),
   jumping(s.jumping),
   dead(s.dead),
+  godMode( s.godMode ),
   scale(s.scale),
   action(s.action),
+  lives(s.lives),
   currentFrame(s.currentFrame),
   walkFrames( s.walkFrames ),
   deathFrames( s.deathFrames ),
+  invFrames( s.invFrames ),
   frameInterval( s.frameInterval ),
   deathFrameInterval( s.deathFrameInterval ),
+  invFrameInterval( s.invFrameInterval ),
   timeSinceLastFrame( s.timeSinceLastFrame ),
+  invincibilityPeriod( s.invincibilityPeriod ),
   worldWidth( s.worldWidth ),
   worldHeight( s.worldHeight ),
   baseY( s.baseY ),
@@ -97,18 +119,25 @@ Player& Player::operator=(const Player& s) {
   imagesLeft = (s.imagesLeft);
   imagesRight = (s.imagesRight);
   imagesDeath = (s.imagesDeath);
+  imagesInvincible = (s.imagesInvincible);
   images = (s.images);
-  observers = (s.observers),
+  observers = (s.observers);
+  boss = (s.boss);
   jumping = (s.jumping);
   dead = (s.dead);
+  godMode = (s.godMode);
   scale = (s.scale);
   action = (s.action);
+  lives = (s.lives);
   currentFrame = (s.currentFrame);
   walkFrames = ( s.walkFrames );
   deathFrames = ( s.deathFrames );
+  invFrames = ( s.invFrames );
   frameInterval = ( s.frameInterval );
   deathFrameInterval = ( s.deathFrameInterval );
+  invFrameInterval = ( s.invFrameInterval );
   timeSinceLastFrame = ( s.timeSinceLastFrame );
+  invincibilityPeriod = ( s.invincibilityPeriod );
   worldWidth = ( s.worldWidth );
   worldHeight = ( s.worldHeight );
   baseY = ( s.baseY );
@@ -120,10 +149,18 @@ Player& Player::operator=(const Player& s) {
 void Player::draw() const {
     images[action][currentFrame]->draw(getX(), getY(), getScale());
     shooter.draw();
+    if(godMode)
+    {
+      IoMod::getInstance().writeText("GODMODE ACTIVE", 10, 10);
+    }
 }
 
 void Player::attach(Drawable* obs) {
   observers.push_back(obs);
+}
+
+void Player::attachBoss(Drawable* b) {
+  boss = b;
 }
 
 void Player::notifyObservers() {
@@ -134,7 +171,7 @@ void Player::notifyObservers() {
 
 void Player::stop() {
   //setVelocity( Vector2f(0, 0) );
-  setVelocityX( 0.83*getVelocityX() );
+  setVelocityX( 0.75*getVelocityX() );
 
   if(getY() > baseY) {
     setY(baseY);
@@ -169,9 +206,17 @@ void Player::jump()    {
   }
 }
 
+void Player::down() {
+  if(jumping) {
+    setVelocityY( getVelocityY() + 200 );
+  }
+}
+
 void Player::shoot() {
-  Vector2f shootSpot(getX() + 30, getY() + 20);
-  shooter.shoot(shootSpot);
+  if(!dead) {
+    Vector2f shootSpot(getX() + 30, getY() + 20);
+    shooter.shoot(shootSpot);
+  }
 }
 
 bool Player::collided(){
@@ -189,11 +234,20 @@ void Player::checkBullets() {
       dynamic_cast<Sprite*>(o)->explode();
     }
   }
+  if(shooter.collidedWith(boss)) {
+    dynamic_cast<Boss*>(boss)->hit();
+  }
+}
+
+void Player::toggleGodMode() {
+  godMode = !godMode;
 }
 
 void Player::update(Uint32 ticks) {
   if(dead)
     action = 2;
+  else if(invincibilityPeriod > 0)
+    action = 3;
   else if(getVelocityX() > 0)
     action = 1;
   else
@@ -201,14 +255,18 @@ void Player::update(Uint32 ticks) {
 
   checkBullets();
 
-  if(!dead && collided()) {
+  if(invincibilityPeriod > 0) { invincibilityPeriod -= ticks; }
+  if(!dead && !godMode && !(invincibilityPeriod > 0) && collided()) {
+    lives -= 1;
     dead = true;
     currentFrame = 0;
   }
   if(dead) {
     timeSinceLastFrame += ticks;
-    if(timeSinceLastFrame > 5000) {
+    if(timeSinceLastFrame > 5000 && lives != 0) {
       dead = false;
+      currentFrame = 0;
+      invincibilityPeriod = 3000;
     }
   }
 

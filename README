@@ -33,3 +33,10 @@ Final game level description:
   The game will conclude when all ghosts are dead, which should hopefully be sufficiently
   challenging. Losing all of your health/lives as a player will also end the game. Since the
   # of ghosts is configurable, the difficulty of the game is data driven.
+
+Features added since project 5:
+  Added god mode and indicative text
+  Added restart capabilities
+  Added fast falling
+  Added a boss and new way to win the game
+    To win: Kill boss so that you may kill the ghosts, otherwise ghosts will respawn.

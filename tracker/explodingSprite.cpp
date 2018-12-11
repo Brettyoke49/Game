@@ -3,15 +3,15 @@
 #include "explodingSprite.h"
 
 ExplodingSprite::ExplodingSprite(const Sprite& s) :
-  Sprite(s), 
-  chunks(), 
+  Sprite(s),
+  chunks(),
   freeList(){
   makeChunks(
     Gamedata::getInstance().getXmlInt(s.getName()+"/chunk/size")
   );
 }
 
-ExplodingSprite::~ExplodingSprite() { 
+ExplodingSprite::~ExplodingSprite() {
   for ( Chunk* c : chunks ) {
     delete c;
   }
@@ -22,7 +22,7 @@ ExplodingSprite::~ExplodingSprite() {
   freeList.clear();   // still ...
 }
 
-void ExplodingSprite::draw() const { 
+void ExplodingSprite::draw() const {
   // We use the draw in Chunk, which derives from Sprite.
   // So the draw we're using is actually in Sprite
   for ( Chunk* chunk : chunks ) {
@@ -30,19 +30,19 @@ void ExplodingSprite::draw() const {
   }
 }
 
-void ExplodingSprite::update(Uint32 ticks) { 
+void ExplodingSprite::update(Uint32 ticks) {
   auto ptr = chunks.begin();
   while (ptr != chunks.end()) {
     (*ptr)->update(ticks);
     if ( (*ptr)->goneTooFar()) {  // Check to see if we should free a chunk
       freeList.push_back(*ptr);
       ptr = chunks.erase(ptr);
-    }   
+    }
     else ++ptr;
   }
 }
 
-void ExplodingSprite::makeChunks(unsigned int n) { 
+void ExplodingSprite::makeChunks(unsigned int n) {
   // Break the SDL_Surface into n*n squares; where each square
   // has width and height of imageWidth/n and imageHeight/n
   // Note that "n" s/b a perfect square.
@@ -60,13 +60,13 @@ void ExplodingSprite::makeChunks(unsigned int n) {
     int source_x = 0;
     while ( source_x+chunk_width < getImage()->getWidth() ) {
       // Give each chunk it's own speed/direction:
-      float sx = (rand() % speedx + 40) * (rand()%2?-1:1); // 'cause %0 is 
+      float sx = (rand() % speedx + 40) * (rand()%2?-1:1); // 'cause %0 is
       float sy = (rand() % speedy + 40) * (rand()%2?-1:1); // float except
 
-      Image* image = 
+      Image* image =
         proto->crop({source_x,source_y,chunk_width,chunk_height});
       Chunk* chunk = new Chunk(
-                Vector2f(getX()+source_x,   // x coord of destination 
+                Vector2f(getX()+source_x,   // x coord of destination
                          getY()+source_y),  // y coord of destination
                 Vector2f(sx, sy),
                 getName()+"/chunk",
