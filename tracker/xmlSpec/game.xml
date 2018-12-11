@@ -96,7 +96,7 @@
 
 <Trumpet>
   <file>assets/trumpetShrunk.png</file>
-  <interval>0</interval>
+  <interval>250</interval>
   <distance>850</distance>
   <startLoc x="0" y="0"/>
   <speedY>-600</speedY>
