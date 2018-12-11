@@ -82,6 +82,9 @@ void Engine::update(Uint32 ticks) {
   if(!anyAlive) {
     gameOver = true;
   }
+  if(player->deadForGood()) {
+    gameOver = true;
+  }
 
   back.update();
   front.update();
@@ -89,9 +92,15 @@ void Engine::update(Uint32 ticks) {
 }
 
 void Engine::endGame() const {
-  std::string endText = "Congratulations! You have defeated all the ghosts! Press R to"
-    " restart, or ESC to quit.";
-  io.writeText(endText, 150, 500, {255, 50, 50, 0});
+  if(player->deadForGood()) {
+    std::string endText = "Oh dear, you are dead! Press R to restart, or ESC to quit.";
+    io.writeText(endText, 300, 500, {255, 0, 0, 0});
+  }
+  else {
+    std::string endText = "Congratulations! You have defeated all the ghosts! Press R to"
+      " restart, or ESC to quit.";
+    io.writeText(endText, 150, 500, {255, 50, 50, 0});
+  }
 }
 
 bool Engine::play() {
@@ -107,7 +116,7 @@ bool Engine::play() {
       keystate = SDL_GetKeyboardState(NULL);
       if (event.type ==  SDL_QUIT) { done = true; break; }
       if(event.type == SDL_KEYDOWN) {
-        if (keystate[SDL_SCANCODE_ESCAPE] || keystate[SDL_SCANCODE_Q]) {
+        if (keystate[SDL_SCANCODE_ESCAPE]){
           done = true;
           break;
         }

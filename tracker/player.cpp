@@ -1,3 +1,4 @@
+#include <sstream>
 #include "player.h"
 #include "gameData.h"
 #include "imageFactory.h"
@@ -26,8 +27,9 @@ void Player::advanceFrame(Uint32 ticks) {
         timeSinceLastFrame = 0;
       }
       else { //If moving left, play the frames going backwards so he doesn't moonwalk
-        if(currentFrame == 0)
+        if(currentFrame == 0) {
           currentFrame = walkFrames - 1;
+        }
         else
           currentFrame = currentFrame - 1;
 
@@ -72,6 +74,7 @@ Player::Player( const std::string& name) :
   invincibilityPeriod( 0 ),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height")),
+  viewHeight(Gamedata::getInstance().getXmlInt("view/height")),
   baseY(Gamedata::getInstance().getXmlInt(name+"/startLoc/y")),
   initialVelocity(Gamedata::getInstance().getXmlInt(name+"/speedX"),
          Gamedata::getInstance().getXmlInt(name+"/speedY"))
@@ -107,6 +110,7 @@ Player::Player(const Player& s) :
   invincibilityPeriod( s.invincibilityPeriod ),
   worldWidth( s.worldWidth ),
   worldHeight( s.worldHeight ),
+  viewHeight( s.viewHeight ),
   baseY( s.baseY ),
   initialVelocity( s.initialVelocity )
 {
@@ -140,6 +144,7 @@ Player& Player::operator=(const Player& s) {
   invincibilityPeriod = ( s.invincibilityPeriod );
   worldWidth = ( s.worldWidth );
   worldHeight = ( s.worldHeight );
+  viewHeight = ( s.viewHeight );
   baseY = ( s.baseY );
   initialVelocity = ( s.initialVelocity );
   setScale(scale);
@@ -149,6 +154,11 @@ Player& Player::operator=(const Player& s) {
 void Player::draw() const {
     images[action][currentFrame]->draw(getX(), getY(), getScale());
     shooter.draw();
+
+    std::stringstream livesLeft;
+    livesLeft << "Lives: " << lives;
+    IoMod::getInstance().writeText(livesLeft.str(), 1100, viewHeight-80, {135,206,250,0});
+
     if(godMode)
     {
       IoMod::getInstance().writeText("GODMODE ACTIVE", 10, 10);
@@ -198,7 +208,7 @@ void Player::left()  {
   }
 }
 void Player::jump()    {
-  if(!dead) {
+  if(!dead && invincibilityPeriod <= 0) {
     if(!jumping) { //Don't want to stack jumps
       jumping = true;
       setVelocityY( -initialVelocity[1] );
@@ -213,7 +223,7 @@ void Player::down() {
 }
 
 void Player::shoot() {
-  if(!dead) {
+  if(!dead && invincibilityPeriod <= 0) {
     Vector2f shootSpot(getX() + 30, getY() + 20);
     shooter.shoot(shootSpot);
   }
@@ -277,21 +287,17 @@ void Player::update(Uint32 ticks) {
   Vector2f incr = getVelocity() * static_cast<float>(ticks) * 0.001;
   setPosition(getPosition() + incr);
 
-  if ( getY() < 0) {
-    setVelocityY( fabs( getVelocityY() ) );
-  }
-  if ( getY() > worldHeight-getScaledHeight()) {
-    setVelocityY( -fabs( getVelocityY() ) );
-  }
-
   if ( getX() < 0) {
     setVelocityX( fabs( getVelocityX() ) );
   }
-  if ( getX() > worldWidth-getScaledWidth()) {
+  if (getX() > worldWidth) {
     setVelocityX( -fabs( getVelocityX() ) );
   }
 
+
   notifyObservers();
   stop();
-}
 
+  //This is an ugly band-aid fix to an issue with displaying a bad image and seg faulting.
+  if(action == 3 && currentFrame > 1) { currentFrame = 0; }
+}

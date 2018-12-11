@@ -109,7 +109,7 @@
 <startLoc x="300" y="50"/>
 <frames>6</frames>
 <interval>100</interval>
-<speedX>100</speedX>
+<speedX>130</speedX>
 <speedY>0</speedY>
 <transparency>false</transparency>
 </Boss>

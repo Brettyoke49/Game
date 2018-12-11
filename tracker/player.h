@@ -33,6 +33,11 @@ public:
   void notify(int, int) { }
   void checkBullets();
   void toggleGodMode();
+  bool deadForGood() { if(lives == 0)
+      return true;
+    else
+      return false;
+  }
 
 
   void right();
@@ -72,6 +77,7 @@ private:
   int invincibilityPeriod;
   int worldWidth;
   int worldHeight;
+  int viewHeight;
 
   int baseY;
   Vector2f initialVelocity;

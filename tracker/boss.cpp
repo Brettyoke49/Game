@@ -30,7 +30,7 @@ Boss::Boss( const std::string& name) :
   hitCount(0),
   alive(true)
 {
-  setScale(3.0);
+  setScale(4.0);
 }
 
 Boss::Boss( const std::string& name, Player* subject) :
@@ -54,7 +54,7 @@ Boss::Boss( const std::string& name, Player* subject) :
   alive(true)
 {
   subject->attachBoss(this);
-  setScale(3.0);
+  setScale(4.0);
 }
 
 Boss::Boss(const Boss& s) :
