@@ -23,6 +23,7 @@ Engine::Engine() :
   gdata( Gamedata::getInstance() ),
   hud( Hud::getInstance() ),
   clock( Clock::getInstance() ),
+  sound(),
   renderer( rc.getRenderer() ),
   front("front", Gamedata::getInstance().getXmlInt("front/factor") ),
   back("back", Gamedata::getInstance().getXmlInt("back/factor") ),
@@ -131,7 +132,10 @@ bool Engine::play() {
           player->jump();
         }
         if ( keystate[SDL_SCANCODE_SPACE] ) {
+          if(!player->deadForGood()) {
+          sound[0];
           player->shoot();
+          }
         }
         if ( keystate[SDL_SCANCODE_G] ) {
           player->toggleGodMode();

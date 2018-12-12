@@ -82,7 +82,7 @@
 
 <Ghost>
   <file>assets/ghost.png</file>
-  <number>12</number>
+  <number>13</number>
   <startLoc x="1500" y="200"/>
   <speedX>250</speedX>
   <speedY>0</speedY>

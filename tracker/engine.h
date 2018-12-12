@@ -8,6 +8,7 @@
 #include "player.h"
 #include "boss.h"
 #include "hud.h"
+#include "sound.h"
 
 class Engine {
 public:
@@ -21,6 +22,7 @@ private:
   const Gamedata& gdata;
   const Hud& hud;
   Clock& clock;
+  SDLSound sound;
 
   SDL_Renderer * const renderer;
   World front;

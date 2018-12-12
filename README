@@ -4,39 +4,36 @@ Course: CPSC 4160
 
 Clemson Email Address: bmprobe@g.clemson.edu
 
-Project no: 5
+Project no: 6
 
-Project due date: December 5, 2018
+Project due date: December 12, 2018
 
 Project description:
-  This project implements shooting, object pooling (for the bullets) and explosions for the
-  enemy ghosts. The HUD has been adjusted to show that you can now shoot. Other than that the
-  changes are fairly self explanatory, as it was just a matter of getting Dr. Malloy's code
-  in line with mine, which only caused a few minor hiccups.
+  This is the final project. Details I've added since project 5 are at the bottom of this README.
 
-  Regarding the 8 bit trumpet that he shoots as "bullets", that is a reference to a popular
-  meme called "mr skeltal" or "doot doot". While it looks a bit silly, it does fit in with
-  the theme if you spend enough time on the internet. I may or may not change it later to
-  something that fits better.
+How to play:
+  I don't have instructions within the game because that's part of the challenge, figuring out what to do (minus the controls). In order to win the game, you must kill the boss that floats at the top of the screen before you may fully kill the ghosts. Shooting a ghost before killing the boss will only result in it respawning. In order to win, kill the boss completely (10 bullets, indicated by health bar) and then kill all ghosts. If you can do that without losing all 3 of your lives (configuarable in xml) you win and a message will appear stating such.
 
-Where I got my sprites:
+Where I got my sprites and sounds:
   I made the ghost sprite.
   The skeleton sprite is from: https://jesse-m.itch.io/skeleton-pack
+  The trumpet sprite is from: https://jacobl14.wordpress.com/tag/8-bit-pringles/
+  The boss sprite is from: https://www.spriters-resource.com/game_boy_advance/boulderdashex/sheet/93948/
 
-Final game level description:
-  For the final game level, I plan on using the same sprites plus one more. I intend to
-  add some kind of glowing ball (spirit kinda thing) that goes back and forth at the top of
-  the screen. My idea is that killing a ghost only yields to two more spawning. In order for
-  ghosts to stay dead, the orb object must first be killed. Ideally it will have health, and
-  be somewhat difficult to hit (especially with the ghosts flying around).
+  Trumpet sound bit: http://folk.uio.no/inf1040/lydfiler/trumpet.wav
+  Music: https://ia801307.us.archive.org/8/items/AndrewGoldSpookyScarySkeletons/Andrew%20Gold%20-%20Spooky%20Scary%20Skeletons.mp3
 
-  The game will conclude when all ghosts are dead, which should hopefully be sufficiently
-  challenging. Losing all of your health/lives as a player will also end the game. Since the
-  # of ghosts is configurable, the difficulty of the game is data driven.
+Theme explanation:
+  The theme overall is pretty obvious, but just in case you're not aware of why I included the trumpets or the chosen song, it's a reference to a fairly popular meme. Look up "doot doot" if you want to see examples.
+
 
 Features added since project 5:
   Added god mode and indicative text
   Added restart capabilities
   Added fast falling
-  Added a boss and new way to win the game
+  Added a boss and a way to win the game
     To win: Kill boss so that you may kill the ghosts, otherwise ghosts will respawn.
+  Added music and sound
+  Added invincibility period after being hit and corresponding animation
+  Added set amount of lives and a permanant death/text after losing them all.
+  Added health bar for boss and life count for skeleton.
